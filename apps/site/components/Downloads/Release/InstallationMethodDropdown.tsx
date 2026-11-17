@@ -17,9 +17,9 @@ const InstallationMethodDropdown: FC = () => {
   // We parse the compatibility of the dropdown items
   const parsedInstallMethods = useMemo(
     () => parseCompat(INSTALL_METHODS, release),
-    // We only want to react on the change of the OS and Version
+    // Installation methods can also restrict the selected architecture.
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [release.os, release.version]
+    [release.os, release.version, release.platform]
   );
 
   // We group Platforms on the Platform Dropdown to provide the User
@@ -68,9 +68,9 @@ const InstallationMethodDropdown: FC = () => {
         );
       }
     },
-    // We only want to react on the change of the OS and Version
+    // Revalidate the method when its architecture becomes unavailable.
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [release.os, release.version]
+    [release.os, release.version, release.platform]
   );
 
   return (

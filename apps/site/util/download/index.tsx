@@ -111,6 +111,9 @@ export const INSTALL_METHODS = installMethods.map(method => ({
   compatibility: {
     ...method.compatibility,
     os: method.compatibility?.os?.map(os => os as OperatingSystem),
+    platform: method.compatibility?.platform?.map(
+      platform => platform as Platform
+    ),
     releases: method.compatibility?.releases?.map(
       release => release as NodeReleaseStatus
     ),

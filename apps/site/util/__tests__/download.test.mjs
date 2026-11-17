@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { describe, it } from 'node:test';
 
 import {
@@ -11,6 +12,7 @@ import {
 } from '#site/util/download';
 
 import { buildReleaseArtifacts } from '../download/archive';
+import createInterpreter from '../interpreter';
 
 describe('parseCompat', () => {
   it('should handle all OS, install methods, and package managers', () => {
@@ -232,6 +234,107 @@ describe('nextItem', () => {
 });
 
 describe('INSTALL_METHODS', () => {
+  const context = {
+    os: 'WIN',
+    installMethod: '',
+    platform: 'x64',
+    version: 'v24.22.1',
+    release: { status: 'LTS', version: '24.22.1' },
+  };
+
+  it('keeps Unix nvm off Windows and preserves fnm as the Windows default', () => {
+    const methods = parseCompat(INSTALL_METHODS, context);
+
+    assert.equal(methods.find(({ value }) => value === 'NVM').disabled, true);
+    assert.equal(
+      nextItem(
+        '',
+        methods.filter(({ recommended }) => recommended)
+      ),
+      'FNM'
+    );
+    for (const id of ['NVM_WINDOWS', 'WINGET']) {
+      const method = methods.find(({ value }) => value === id);
+      assert.equal(method.disabled, false);
+      assert.ok(!method.recommended);
+    }
+  });
+
+  it('restricts native Windows methods to their supported environments', () => {
+    const cases = [
+      ['NVM_WINDOWS', { os: 'MAC' }, true],
+      ['NVM_WINDOWS', { os: 'LINUX' }, true],
+      ['NVM_WINDOWS', { platform: 'arm64' }, false],
+      ['NVM_WINDOWS', { platform: 'x86' }, true],
+      ['NVM_WINDOWS', { release: { status: 'Alpha' } }, true],
+      ['WINGET', { os: 'MAC' }, true],
+      ['WINGET', { os: 'LINUX' }, true],
+      ['WINGET', { release: { status: 'Alpha' } }, true],
+      ['WINGET', { release: { status: 'EOL' } }, true],
+    ];
+
+    for (const [id, overrides, disabled] of cases) {
+      const methods = parseCompat(INSTALL_METHODS, {
+        ...context,
+        ...overrides,
+      });
+      assert.equal(
+        methods.find(({ value }) => value === id).disabled,
+        disabled,
+        `${id}: ${JSON.stringify(overrides)}`
+      );
+    }
+  });
+
+  const renderSnippet = async (name, props) => {
+    const content = await readFile(
+      new URL(`../../snippets/en/download/${name}.bash`, import.meta.url),
+      'utf8'
+    );
+    const interpreter = createInterpreter({ props }, 'script');
+    interpreter.run(`exports.content = \`${content}\``);
+    return interpreter.exports.content;
+  };
+
+  it('renders exact WinGet versions, package IDs, and architectures', async () => {
+    for (const [status, version, id] of [
+      ['LTS', '24.22.1', 'OpenJS.NodeJS.LTS'],
+      ['Current', '26.12.1', 'OpenJS.NodeJS'],
+    ]) {
+      for (const platform of ['x64', 'arm64', 'x86']) {
+        const content = await renderSnippet('winget', {
+          ...context,
+          platform,
+          release: { status, version },
+        });
+        assert.ok(
+          content.includes(
+            `winget install --id ${id} --exact --source winget --version ${version} --architecture ${platform}`
+          )
+        );
+        assert.ok(content.includes('if ($LASTEXITCODE -ne 0) { throw'));
+        assert.ok(!content.includes('${'));
+      }
+    }
+  });
+
+  it('renders matching nvm-windows v2 installers and exact Node versions', async () => {
+    for (const platform of ['x64', 'arm64']) {
+      const content = await renderSnippet('nvm_windows', {
+        ...context,
+        platform,
+      });
+      assert.ok(
+        content.includes(
+          `https://github.com/nvm-windows/nvm/releases/download/v2.0.1/nvm-2.0.1-${platform}-setup.exe`
+        )
+      );
+      assert.ok(content.includes('nvm install 24.22.1'));
+      assert.ok(content.includes('nvm use 24.22.1'));
+      assert.ok(!content.includes('${'));
+    }
+  });
+
   it('should create icons only when an icon is configured', () => {
     const nvmMethod = INSTALL_METHODS.find(method => method.value === 'NVM');
     const asdfMethod = INSTALL_METHODS.find(method => method.value === 'ASDF');

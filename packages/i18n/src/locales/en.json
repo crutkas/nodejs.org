@@ -248,6 +248,7 @@
         }
       },
       "codeBox": {
+        "architecture": "Architecture for these instructions:",
         "unsupportedVersionWarning": "This version is out of maintenance. Please use a currently supported version. <link>Understand EOL support.</link>",
         "alphaVersionWarning": "Alpha releases are meant for early testing and are not intended for production use. Their APIs may change between releases. <link>Learn more about Alpha releases.</link>",
         "communityPlatformInfo": "Installation methods that involve community software are supported by the teams maintaining that software.",
@@ -257,6 +258,8 @@
           "default": "{platform} and their installation scripts are not maintained by the Node.js project.",
           "nvm": "\"nvm\" is a cross-platform Node.js version manager.",
           "fnm": "\"fnm\" is a cross-platform Node.js version manager.",
+          "nvmWindows": "\"nvm-windows\" manages Node.js versions on native Windows and is separate from the macOS/Linux nvm project. Install the matching architecture of nvm-windows v2. Back up global packages before setup: the community installer can migrate and uninstall an existing Node.js installation. Run setup as your standard user; registering its event source can request UAC approval.",
+          "winget": "WinGet installs Node.js directly, not a version manager. Requires Windows Package Manager (App Installer). The command requests the selected version and architecture; packages can lag Node.js releases or omit older versions. If unavailable, use the prebuilt installer instead. Windows may request administrator approval. Avoid mixing a direct installation with a version manager.",
           "brew": "Homebrew is a package manager for macOS and Linux.",
           "choco": "Chocolatey is a package manager for Windows.",
           "docker": "Docker is a containerization platform.",

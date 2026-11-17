@@ -5,6 +5,8 @@ import type { OperatingSystem, Platform } from '#site/types/userAgent';
 export type InstallationMethod =
   | 'NVM'
   | 'FNM'
+  | 'NVM_WINDOWS'
+  | 'WINGET'
   | 'BREW'
   | 'DOCKER'
   | 'CHOCO'
