@@ -8,6 +8,7 @@ import { use, useMemo } from 'react';
 
 import CodeBox from '#site/components/Common/CodeBox';
 import LinkWithArrow from '#site/components/Common/LinkWithArrow';
+import PlatformDropdown from '#site/components/Downloads/Release/PlatformDropdown';
 import Link from '#site/components/Link';
 import ReleaseAlertBox from '#site/components/ReleaseAlertBox';
 import {
@@ -150,6 +151,13 @@ const ReleaseCodeBox: FC = () => {
 
       {/* Release status alert */}
       <ReleaseAlertBox release={context.release} releases={releases} />
+
+      {['NVM_WINDOWS', 'WINGET'].includes(context.installMethod) && (
+        <div className="flex items-center gap-2">
+          <span>{t('layouts.download.codeBox.architecture')}</span>
+          <PlatformDropdown />
+        </div>
+      )}
 
       {/* Community platform notice */}
       {platformInfo.exists && !platformInfo.recommended && (

@@ -20,6 +20,7 @@ This guide explains how to add and modify installation methods and package manag
   - [Platform/Architecture Restrictions](#platformarchitecture-restrictions)
   - [Combined Restrictions](#combined-restrictions)
 - [Snippet Development](#snippet-development)
+  - [Native Windows methods](#native-windows-methods)
   - [Template Syntax](#template-syntax)
   - [Multi-line Instructions](#multi-line-instructions)
 
@@ -239,6 +240,35 @@ This method would only appear for:
 - 64-bit x86 or ARM architectures
 
 ## Snippet Development
+
+### Native Windows methods
+
+`NVM_WINDOWS` is the separate [nvm-windows](https://github.com/nvm-windows/nvm)
+project, not Unix `NVM`. Its snippet links to the matching x64 or ARM64
+community installer for v2, then installs and activates the exact selected
+Node.js release. nvm-windows v2 uses its own binary's architecture; it does not
+accept the v1 `32`/`64` install argument. x86 is therefore not offered.
+Complete setup and reopen PowerShell before running the Node.js commands.
+The installer can migrate and uninstall an existing Node.js installation;
+back up global packages and review the
+[installation and permissions guidance](https://docs.nvm-windows.com/install/installers)
+first.
+
+`WINGET` installs Node.js directly using `OpenJS.NodeJS.LTS` for LTS releases
+and `OpenJS.NodeJS` for Current releases. It specifies `--version`,
+`--architecture`, `--exact`, and `--source winget` rather than silently
+installing the latest release or the host's default architecture.
+WinGet's catalog can lag releases or lack a selected version/architecture.
+In that case the command fails and the user should choose the prebuilt
+installer; it must not fall back to another Node.js release. Alpha and EOL
+releases are not offered through this method. Reopen PowerShell after setup
+to pick up PATH changes. Do not mix direct Node.js installs with a version
+manager.
+
+Both methods remain community options. The existing Windows default (`FNM`)
+and recommendation flags are unchanged. These two methods show an architecture
+selector above the code box, sharing the installation snippet's release context.
+The prebuilt download selectors below have their own independent context.
 
 ### Template Syntax
 

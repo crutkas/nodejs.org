@@ -154,6 +154,30 @@
       "info": "layouts.download.codeBox.platformInfo.fnm"
     },
     {
+      "id": "NVM_WINDOWS",
+      "icon": "NVMWindows",
+      "name": "nvm-windows",
+      "compatibility": {
+        "os": ["WIN"],
+        "platform": ["x64", "arm64"],
+        "semver": [">= 4.0.0"],
+        "releases": ["Current", "LTS", "EOL"]
+      },
+      "url": "https://docs.nvm-windows.com/install/installers",
+      "info": "layouts.download.codeBox.platformInfo.nvmWindows"
+    },
+    {
+      "id": "WINGET",
+      "icon": "WinGet",
+      "name": "WinGet",
+      "compatibility": {
+        "os": ["WIN"],
+        "releases": ["Current", "LTS"]
+      },
+      "url": "https://learn.microsoft.com/windows/package-manager/winget/",
+      "info": "layouts.download.codeBox.platformInfo.winget"
+    },
+    {
       "id": "BREW",
       "icon": "Homebrew",
       "name": "Brew",

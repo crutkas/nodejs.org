@@ -9,3 +9,8 @@ import Volta from '#ui/Icons/InstallationMethod/Volta';
 import ZeroInstall from '#ui/Icons/InstallationMethod/ZeroInstall';
 
 export { Choco, Docker, FNM, Homebrew, N, NVM, VitePlus, Volta, ZeroInstall };
+
+export {
+  ArrowsRightLeftIcon as NVMWindows,
+  CommandLineIcon as WinGet,
+} from '@heroicons/react/24/outline';
